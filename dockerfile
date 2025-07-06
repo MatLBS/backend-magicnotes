@@ -16,8 +16,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Config Render
-ENV PORT=10000
-EXPOSE 10000
+EXPOSE 8000
 
 # Lancer ton backend (à adapter si ton fichier ≠ main.py)
-CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=10000"]
+CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000"]

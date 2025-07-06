@@ -4,6 +4,10 @@ import shutil
 import uvicorn
 import os
 from ocr import process_image
+from PIL import Image
+import time
+
+port = int(os.environ.get("PORT", 8000))
 
 app = FastAPI()
 
@@ -17,18 +21,26 @@ app.add_middleware(
 
 @app.post("/uploadImage")
 async def upload_image(file: UploadFile = File(...)):
-    print("python")
+    print("-------------------python-------------------")
+    t0 = time.time()
     os.makedirs("temp_images", exist_ok=True)
 
     file_location = f"temp_images/{file.filename}"
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-        
+    t1 = time.time()
+    img = Image.open("temp_images/" + file.filename)
+    img = img.convert("RGB")
+    img.save(("temp_images/" + file.filename), "JPEG", optimize=True, quality=70)
+
     print("Fichier sauvegardé à :", file_location)
     print("Taille du fichier sauvegardé :", os.path.getsize(file_location), "octets")
 
     highlighted_words = process_image(file_location)
+    t2 = time.time()
+    print("Temps OCR :", t2-t1)
+    print("Temps total :", t2-t0)
     return highlighted_words
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    uvicorn.run(app, host="0.0.0.0", port=port)
