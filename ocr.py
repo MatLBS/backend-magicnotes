@@ -42,7 +42,7 @@ def process_image(image_path):
 
 
 	response = client.responses.create(
-		model="gpt-4.1",
+		model="gpt-4.1-nano",
 		input=[
 			{
 				"role": "user",
@@ -57,4 +57,23 @@ def process_image(image_path):
 		],
 	)
 
+	return response.output_text
+
+def process_summary(notes):
+	print(notes)
+	response = client.responses.create(
+		model="gpt-4.1-nano",
+		input=[
+			{
+				"role": "user",
+				"content": [
+					{ "type": "input_text", "text": "Summarize the following notes. Please write the summary in the same language as the original notes." },
+					{
+						"type": "input_text",
+						"text": notes,
+					},
+				],
+			}
+		],
+	)
 	return response.output_text

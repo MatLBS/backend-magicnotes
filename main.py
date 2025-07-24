@@ -1,9 +1,9 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Body
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import uvicorn
 import os
-from ocr import process_image
+from ocr import process_image, process_summary
 from PIL import Image
 import time
 
@@ -41,6 +41,17 @@ async def upload_image(file: UploadFile = File(...)):
     print("Temps OCR :", t2-t1)
     print("Temps total :", t2-t0)
     return highlighted_words
+
+@app.post("/generateSummary")
+async def generate_summary(notes: str = Body(...)):
+    print("-------------------python-------------------")
+    t0 = time.time()
+    summary = process_summary(notes)
+    t1 = time.time()
+    print("Temps Génération Résumé :", t1-t0)
+    print(summary)
+    return summary
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=port)
