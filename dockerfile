@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libxext6 \
     libgl1 \
+    libgl1-mesa-glx \
     && apt-get clean
 
 # Installer les dépendances Python
