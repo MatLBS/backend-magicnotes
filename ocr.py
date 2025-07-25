@@ -42,12 +42,12 @@ def process_image(image_path):
 
 
 	response = client.responses.create(
-		model="gpt-4.1-nano",
+		model="gpt-4.1-mini",
 		input=[
 			{
 				"role": "user",
 				"content": [
-					{ "type": "input_text", "text": "Here is an image of a page. Please list all the words that are highlighted, regardless of the color. Give only the highlighted words, separated by commas, without any additional explanation." },
+					{ "type": "input_text", "text": "Here is an image of a page. Please list all the words that are highlighted, regardless of the color. Give only the highlighted words without any additional explanation." },
 					{
 						"type": "input_image",
 						"image_url": f"data:image/jpeg;base64,{base64_image}",
@@ -62,7 +62,7 @@ def process_image(image_path):
 def process_summary(notes):
 	print(notes)
 	response = client.responses.create(
-		model="gpt-4.1-nano",
+		model="gpt-4.1-mini",
 		input=[
 			{
 				"role": "user",

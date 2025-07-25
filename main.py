@@ -42,6 +42,7 @@ async def upload_image(file: UploadFile = File(...)):
     print("Temps total :", t2-t0)
     return highlighted_words
 
+
 @app.post("/generateSummary")
 async def generate_summary(notes: str = Body(...)):
     print("-------------------python-------------------")
