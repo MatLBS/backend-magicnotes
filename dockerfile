@@ -1,23 +1,21 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Installer Tesseract OCR
-RUN apt-get update && apt-get install -y \
-    tesseract-ocr \
-    libglib2.0-0 \
-    libsm6 \
-    libxrender1 \
-    libxext6 \
-    libgl1 \
-    libgl1-mesa-glx \
-    && apt-get clean
-
-# Installer les dépendances Python
+# Change the working directory to the `app` directory
 WORKDIR /app
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Config Render
-EXPOSE 8000
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
 
-# Lancer ton backend (à adapter si ton fichier ≠ main.py)
-CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000"]
+# Copy the project into the image
+ADD . /app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen
+
+# Run with uvicorn
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
